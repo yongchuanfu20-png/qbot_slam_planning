@@ -22,7 +22,8 @@ from qlabs_setup import setup
 import AstarPathPlanner as ap
 import Controller as cont
 import Asearch as aas
-import dstar as ds
+import dsl as ds
+
 
 # Section A - Setup
 
@@ -109,6 +110,8 @@ try:
                 turnSpd=keyboardCmd[1]
 
                 commands = np.array([forSpd, turnSpd], dtype = np.float64) # robot spd command
+
+
     # --------------------------------- A star path and path controller -------------------------------
             else:
                 # if map_generated == False:
@@ -132,9 +135,11 @@ try:
                     # a star planner
                     # path,vv,nn = aas.search(c_space, (p1[1],p1[0]), (p2[1],p2[0]), "a_star", "euclidean")
 
-                    planner = ds.DStarLite(start=(p1[1],p1[0]), goal= (p2[1],p2[0]), grid_map=c_space)
 
-                    path = planner.get_path()
+                    dd = ds.DsLite(c_space, (p1[1],p1[0]), (p2[1],p2[0]))
+
+                    path = dd.find_extract_path()
+
                     print('path:',path)
                     path_map = c_space.copy()
                     for n in path:
@@ -148,7 +153,7 @@ try:
                     col_w = int(-(pose[0] / res) + 400)
                     row_w = int(-(pose[1] / res) + 400)
 
-                    path = planner.replan(start=(p1[1],p1[0]), new_map=c_space)
+                    path = dd.replan(c_space)
 
                     print('rep,...path:',path)
                     path_map = c_space.copy()
